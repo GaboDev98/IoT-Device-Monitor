@@ -1,8 +1,9 @@
 package com.gabodev.iotdevicemonitor.viewmodel
 
 import com.gabodev.iotdevicemonitor.models.Reading
-import com.gabodev.iotdevicemonitor.data.PacaRepository
+import com.gabodev.iotdevicemonitor.data.DeviceRepository
 import com.gabodev.iotdevicemonitor.data.RegisterResult
+import com.gabodev.iotdevicemonitor.models.AlertConfig
 import com.gabodev.iotdevicemonitor.models.Device
 import com.gabodev.iotdevicemonitor.models.DeviceType
 import androidx.lifecycle.ViewModel
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class PacaViewModel(private val repository: PacaRepository) : ViewModel() {
+class DeviceViewModel(private val repository: DeviceRepository) : ViewModel() {
 
     private val _devices = MutableStateFlow<List<Device>>(emptyList())
     val devices: StateFlow<List<Device>> = _devices
@@ -60,6 +61,15 @@ class PacaViewModel(private val repository: PacaRepository) : ViewModel() {
             } finally {
                 _isLoading.value = false
             }
+        }
+    }
+
+    /** [onResult] receives true when saved; failures are reported by the caller's screen. */
+    fun saveAlerts(deviceId: String, config: AlertConfig, onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val ok = repository.saveAlerts(deviceId, config)
+            if (ok) _successMessage.value = "Alertas guardadas"
+            onResult(ok)
         }
     }
 

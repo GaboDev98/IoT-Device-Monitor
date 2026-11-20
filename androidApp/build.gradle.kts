@@ -35,13 +35,13 @@ android {
         }
     }
     signingConfigs {
-        val storePath = signingValue("storeFile", "ECOPACA_KEYSTORE_PATH")
+        val storePath = signingValue("storeFile", "IOTMONITOR_KEYSTORE_PATH")
         if (storePath != null) {
             create("release") {
                 storeFile = rootProject.file(storePath)
-                storePassword = signingValue("storePassword", "ECOPACA_KEYSTORE_PASSWORD")
-                keyAlias = signingValue("keyAlias", "ECOPACA_KEY_ALIAS")
-                keyPassword = signingValue("keyPassword", "ECOPACA_KEY_PASSWORD")
+                storePassword = signingValue("storePassword", "IOTMONITOR_KEYSTORE_PASSWORD")
+                keyAlias = signingValue("keyAlias", "IOTMONITOR_KEY_ALIAS")
+                keyPassword = signingValue("keyPassword", "IOTMONITOR_KEY_PASSWORD")
             }
         }
     }
@@ -77,5 +77,7 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.auth)
     debugImplementation(libs.compose.ui.tooling)
 }

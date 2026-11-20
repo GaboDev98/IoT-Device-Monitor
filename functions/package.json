@@ -1,0 +1,17 @@
+{
+  "name": "iot-device-monitor-functions",
+  "description": "Push alerts for IoT Device Monitor",
+  "private": true,
+  "main": "index.js",
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "deploy": "firebase deploy --only functions,database",
+    "logs": "firebase functions:log"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.0",
+    "firebase-functions": "^6.6.0"
+  }
+}

@@ -16,6 +16,30 @@
             ".validate": "newData.hasChildren(['temperature', 'humidity', 'pressure'])"
           }
         },
+        "alerts": {
+          "$metric": {
+            ".validate": "$metric === 'temperature' || $metric === 'humidity' || $metric === 'pressure' || $metric === 'offline'",
+            "enabled": { ".validate": "newData.isBoolean()" },
+            "min": { ".validate": "newData.isNumber()" },
+            "max": { ".validate": "newData.isNumber()" },
+            "minutes": { ".validate": "newData.isNumber() && newData.val() >= 5 && newData.val() <= 1440" },
+            "$other": { ".validate": false }
+          }
+        },
+        "alertState": {
+          "$key": { ".validate": "newData.isString() || newData.isBoolean()" }
+        },
+        "lastSeen": { ".validate": "newData.isNumber()" },
+        "$other": { ".validate": false }
+      }
+    },
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid",
+        "fcmTokens": {
+          "$token": { ".validate": "newData.val() === true" }
+        },
         "$other": { ".validate": false }
       }
     }

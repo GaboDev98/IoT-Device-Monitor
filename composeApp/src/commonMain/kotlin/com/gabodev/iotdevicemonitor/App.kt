@@ -8,11 +8,11 @@ import com.gabodev.iotdevicemonitor.ui.*
 import com.gabodev.iotdevicemonitor.ui.theme.IotTheme
 import com.gabodev.iotdevicemonitor.utils.orEmpty
 import com.gabodev.iotdevicemonitor.viewmodel.AuthViewModel
-import com.gabodev.iotdevicemonitor.viewmodel.PacaViewModel
+import com.gabodev.iotdevicemonitor.viewmodel.DeviceViewModel
 import androidx.savedstate.read
 
 @Composable
-fun App(viewModel: PacaViewModel, authViewModel: AuthViewModel) {
+fun App(viewModel: DeviceViewModel, authViewModel: AuthViewModel) {
     val navController = rememberNavController()
     val authState = authViewModel.authState.collectAsState().value
 
@@ -89,7 +89,17 @@ fun App(viewModel: PacaViewModel, authViewModel: AuthViewModel) {
                 ReadingsScreen(
                     viewModel = viewModel,
                     deviceId = deviceId,
-                    navController = navController
+                    navController = navController,
+                    onAlertsClick = { navController.navigate("alerts/$deviceId") }
+                )
+            }
+
+            composable("alerts/{deviceId}") { backStackEntry ->
+                val deviceId = backStackEntry.arguments?.read { getStringOrNull("deviceId") }.orEmpty()
+                AlertSettingsScreen(
+                    viewModel = viewModel,
+                    deviceId = deviceId,
+                    onBack = { navController.popBackStack() }
                 )
             }
         }

@@ -27,6 +27,7 @@ import com.gabodev.iotdevicemonitor.ui.theme.Spacing
 fun DeviceCard(device: Device, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val latest = device.latestReading
     val status = device.status()
+    val violations = device.violations()
     Card(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
@@ -56,8 +57,8 @@ fun DeviceCard(device: Device, onClick: () -> Unit, modifier: Modifier = Modifie
             }
             if (latest != null) {
                 Row(horizontalArrangement = Arrangement.spacedBy(Spacing.sm)) {
-                    MetricTile(Metric.Temperature, latest.valueOf(Metric.Temperature), Modifier.weight(1f), compactLabel = true)
-                    MetricTile(Metric.Humidity, latest.valueOf(Metric.Humidity), Modifier.weight(1f), compactLabel = true)
+                    MetricTile(Metric.Temperature, latest.valueOf(Metric.Temperature), Modifier.weight(1f), alert = Metric.Temperature in violations, compactLabel = true)
+                    MetricTile(Metric.Humidity, latest.valueOf(Metric.Humidity), Modifier.weight(1f), alert = Metric.Humidity in violations, compactLabel = true)
                 }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {

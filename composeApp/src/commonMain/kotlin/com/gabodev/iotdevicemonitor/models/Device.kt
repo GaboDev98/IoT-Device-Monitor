@@ -5,5 +5,6 @@ data class Device(
     val name: String? = "",
     val type: DeviceType = DeviceType.BIODIGESTER_BALE,
     val location: String? = null,
-    val readings: Map<String, Reading> = emptyMap()
+    val readings: Map<String, Reading> = emptyMap(),
+    val alerts: AlertConfig = AlertConfig()
 )

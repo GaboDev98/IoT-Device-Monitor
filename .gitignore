@@ -30,3 +30,7 @@ keystore.properties
 
 # ESP32 credentials
 /esp32/**/secrets.h
+
+# Cloud Functions
+/functions/node_modules/
+/*-debug.log

@@ -12,6 +12,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.NotificationAdd
+import androidx.compose.material.icons.rounded.NotificationsActive
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -45,13 +47,19 @@ import com.gabodev.iotdevicemonitor.ui.components.formatMetric
 import com.gabodev.iotdevicemonitor.ui.components.relativeTime
 import com.gabodev.iotdevicemonitor.ui.components.status
 import com.gabodev.iotdevicemonitor.ui.components.valueOf
+import com.gabodev.iotdevicemonitor.ui.components.violations
 import com.gabodev.iotdevicemonitor.ui.theme.ReadingStyles
 import com.gabodev.iotdevicemonitor.ui.theme.Spacing
 import com.gabodev.iotdevicemonitor.viewmodel.PacaViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReadingsScreen(viewModel: PacaViewModel, deviceId: String, navController: NavHostController) {
+fun ReadingsScreen(
+    viewModel: PacaViewModel,
+    deviceId: String,
+    navController: NavHostController,
+    onAlertsClick: () -> Unit = {},
+) {
     val readings by viewModel.readings.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val devices by viewModel.devices.collectAsState()
@@ -71,6 +79,16 @@ fun ReadingsScreen(viewModel: PacaViewModel, deviceId: String, navController: Na
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Volver")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = onAlertsClick) {
+                        val active = device?.alerts?.anyEnabled == true
+                        Icon(
+                            if (active) Icons.Rounded.NotificationsActive else Icons.Rounded.NotificationAdd,
+                            contentDescription = "Configurar alertas",
+                            tint = if (active) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                 },
                 scrollBehavior = scrollBehavior,
@@ -124,11 +142,22 @@ private fun LatestReadingHero(reading: Reading, device: com.gabodev.iotdevicemon
                 }
                 device?.let { StatusBadge(it.status()) }
             }
+            val violations = device?.violations(reading).orEmpty()
             Row(horizontalArrangement = Arrangement.spacedBy(Spacing.lg)) {
                 Metric.entries.forEach { metric ->
+                    val alert = metric in violations
                     Column(Modifier.weight(1f)) {
-                        Text(metric.label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text(formatMetric(metric, reading.valueOf(metric)), style = ReadingStyles.large, maxLines = 1)
+                        Text(
+                            if (alert) "${metric.label} ⚠" else metric.label,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = if (alert) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            formatMetric(metric, reading.valueOf(metric)),
+                            style = ReadingStyles.large,
+                            maxLines = 1,
+                            color = if (alert) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
+                        )
                         Text(metric.unit, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }

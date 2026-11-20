@@ -17,6 +17,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        AlertNotifications.createChannel(this)
 
         setContent {
             App(pacaViewModel, authViewModel)

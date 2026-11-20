@@ -89,7 +89,17 @@ fun App(viewModel: PacaViewModel, authViewModel: AuthViewModel) {
                 ReadingsScreen(
                     viewModel = viewModel,
                     deviceId = deviceId,
-                    navController = navController
+                    navController = navController,
+                    onAlertsClick = { navController.navigate("alerts/$deviceId") }
+                )
+            }
+
+            composable("alerts/{deviceId}") { backStackEntry ->
+                val deviceId = backStackEntry.arguments?.read { getStringOrNull("deviceId") }.orEmpty()
+                AlertSettingsScreen(
+                    viewModel = viewModel,
+                    deviceId = deviceId,
+                    onBack = { navController.popBackStack() }
                 )
             }
         }

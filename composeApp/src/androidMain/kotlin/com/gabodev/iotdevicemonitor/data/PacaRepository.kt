@@ -1,6 +1,8 @@
 package com.gabodev.iotdevicemonitor.data
 
+import com.gabodev.iotdevicemonitor.models.AlertConfig
 import com.gabodev.iotdevicemonitor.models.Device
+import com.gabodev.iotdevicemonitor.models.Threshold
 import com.gabodev.iotdevicemonitor.models.DeviceType
 import com.gabodev.iotdevicemonitor.models.Reading
 import com.gabodev.iotdevicemonitor.utils.orEmpty
@@ -60,6 +62,18 @@ class FirebasePacaRepository : PacaRepository {
         }
     }
 
+    override suspend fun saveAlerts(deviceId: String, config: AlertConfig): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                database.getReference("$DEVICES/$deviceId/alerts").setValue(config.toMap()).await()
+                true
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                false
+            }
+        }
+
     override suspend fun getReadingDetail(deviceId: String, readingId: String): Reading? {
         return withContext(Dispatchers.IO) {
             try {
@@ -83,6 +97,7 @@ class FirebasePacaRepository : PacaRepository {
                 devicesFlow.value = emptyList()
                 return@AuthStateListener
             }
+            PushTokens.register(uid)
             val query = database.getReference(DEVICES).orderByChild("owner").equalTo(uid)
             val valueListener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -129,6 +144,7 @@ class FirebasePacaRepository : PacaRepository {
         val deviceType = DeviceType.entries.firstOrNull { it.name == typeString } ?: DeviceType.BIODIGESTER_BALE
 
         return Device(
+            alerts = parseAlerts(deviceSnapshot.child("alerts")),
             id = deviceId,
             name = deviceSnapshot.child("name").getValue(String::class.java),
             type = deviceType,
@@ -138,6 +154,35 @@ class FirebasePacaRepository : PacaRepository {
                 .associateBy { it.timestamp }
         )
     }
+
+    private fun parseAlerts(snapshot: DataSnapshot): AlertConfig {
+        if (!snapshot.exists()) return AlertConfig()
+        fun threshold(key: String): Threshold {
+            val t = snapshot.child(key)
+            return Threshold(
+                enabled = t.child("enabled").getValue(Boolean::class.java) ?: false,
+                min = t.child("min").getValue(Double::class.java),
+                max = t.child("max").getValue(Double::class.java),
+            )
+        }
+        val offline = snapshot.child("offline")
+        return AlertConfig(
+            temperature = threshold("temperature"),
+            humidity = threshold("humidity"),
+            pressure = threshold("pressure"),
+            offlineEnabled = offline.child("enabled").getValue(Boolean::class.java) ?: false,
+            offlineMinutes = offline.child("minutes").getValue(Int::class.java) ?: 30,
+        )
+    }
+
+    private fun Threshold.toMap() = mapOf("enabled" to enabled, "min" to min, "max" to max)
+
+    private fun AlertConfig.toMap() = mapOf(
+        "temperature" to temperature.toMap(),
+        "humidity" to humidity.toMap(),
+        "pressure" to pressure.toMap(),
+        "offline" to mapOf("enabled" to offlineEnabled, "minutes" to offlineMinutes),
+    )
 
     private fun parseReadingSnapshot(readingSnapshot: DataSnapshot): Reading? {
         val timestamp = readingSnapshot.key.orEmpty()

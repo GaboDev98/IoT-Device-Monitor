@@ -77,5 +77,7 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.auth)
     debugImplementation(libs.compose.ui.tooling)
 }

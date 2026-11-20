@@ -2,6 +2,7 @@ package com.gabodev.iotdevicemonitor.data
 
 import com.gabodev.iotdevicemonitor.models.Reading
 import com.gabodev.iotdevicemonitor.models.Device
+import com.gabodev.iotdevicemonitor.models.AlertConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 
 enum class RegisterResult {
@@ -21,6 +22,9 @@ interface PacaRepository {
     suspend fun getReadingDetail(deviceId: String, readingId: String): Reading?
 
     suspend fun registerDevice(device: Device): RegisterResult
+
+    /** Replaces /devices/{deviceId}/alerts. */
+    suspend fun saveAlerts(deviceId: String, config: AlertConfig): Boolean
 
     /** Emits the signed-in user's devices; follows login/logout automatically. */
     fun listenForDevicesUpdates(devicesFlow: MutableStateFlow<List<Device>>)

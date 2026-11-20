@@ -1,5 +1,6 @@
 package com.gabodev.iotdevicemonitor.auth
 
+import com.gabodev.iotdevicemonitor.data.PushTokens
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.EmailAuthProvider
@@ -23,7 +24,10 @@ class FirebaseAuthManager {
         user.uid
     }
 
-    suspend fun logout(): Result<Unit> = runAuth("No pudimos cerrar sesión") { auth.signOut() }
+    suspend fun logout(): Result<Unit> = runAuth("No pudimos cerrar sesión") {
+        auth.currentUser?.uid?.let { PushTokens.unregister(it) }
+        auth.signOut()
+    }
 
     suspend fun resetPassword(email: String): Result<Unit> = runAuth<Unit>("No pudimos enviar el email") {
         auth.sendPasswordResetEmail(email).await()
@@ -49,6 +53,7 @@ class FirebaseAuthManager {
         val owned = devicesRef.orderByChild("owner").equalTo(user.uid).get().await()
         val removals = owned.children.mapNotNull { it.key }.associateWith { null }
         if (removals.isNotEmpty()) devicesRef.updateChildren(removals).await()
+        PushTokens.deleteAll(user.uid)
 
         user.delete().await()
     }

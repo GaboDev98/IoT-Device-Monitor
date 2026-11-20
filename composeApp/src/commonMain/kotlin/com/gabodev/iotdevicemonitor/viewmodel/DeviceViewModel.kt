@@ -1,7 +1,7 @@
 package com.gabodev.iotdevicemonitor.viewmodel
 
 import com.gabodev.iotdevicemonitor.models.Reading
-import com.gabodev.iotdevicemonitor.data.PacaRepository
+import com.gabodev.iotdevicemonitor.data.DeviceRepository
 import com.gabodev.iotdevicemonitor.data.RegisterResult
 import com.gabodev.iotdevicemonitor.models.AlertConfig
 import com.gabodev.iotdevicemonitor.models.Device
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class PacaViewModel(private val repository: PacaRepository) : ViewModel() {
+class DeviceViewModel(private val repository: DeviceRepository) : ViewModel() {
 
     private val _devices = MutableStateFlow<List<Device>>(emptyList())
     val devices: StateFlow<List<Device>> = _devices

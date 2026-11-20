@@ -52,7 +52,7 @@ import com.gabodev.iotdevicemonitor.ui.components.BannerTone
 import com.gabodev.iotdevicemonitor.ui.components.Metric
 import com.gabodev.iotdevicemonitor.ui.components.thresholdFor
 import com.gabodev.iotdevicemonitor.ui.theme.Spacing
-import com.gabodev.iotdevicemonitor.viewmodel.PacaViewModel
+import com.gabodev.iotdevicemonitor.viewmodel.DeviceViewModel
 
 private val OFFLINE_OPTIONS = listOf(15, 30, 60, 120)
 
@@ -84,7 +84,7 @@ private fun formatBound(v: Double): String = if (v % 1.0 == 0.0) v.toLong().toSt
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun AlertSettingsScreen(viewModel: PacaViewModel, deviceId: String, onBack: () -> Unit) {
+fun AlertSettingsScreen(viewModel: DeviceViewModel, deviceId: String, onBack: () -> Unit) {
     val devices by viewModel.devices.collectAsState()
     val device = devices.firstOrNull { it.id == deviceId }
     val requestNotifications = rememberNotificationPermissionRequest()

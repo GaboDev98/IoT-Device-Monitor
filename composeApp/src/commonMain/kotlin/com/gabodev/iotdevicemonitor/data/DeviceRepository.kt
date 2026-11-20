@@ -17,7 +17,7 @@ enum class RegisterResult {
  * Devices live at /devices/{deviceId} with an `owner` uid. Each user only sees and
  * edits their own devices (enforced by database.rules.json).
  */
-interface PacaRepository {
+interface DeviceRepository {
 
     suspend fun getReadingDetail(deviceId: String, readingId: String): Reading?
 

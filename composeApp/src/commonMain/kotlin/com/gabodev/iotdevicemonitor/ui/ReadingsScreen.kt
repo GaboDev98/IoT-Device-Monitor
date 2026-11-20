@@ -50,12 +50,12 @@ import com.gabodev.iotdevicemonitor.ui.components.valueOf
 import com.gabodev.iotdevicemonitor.ui.components.violations
 import com.gabodev.iotdevicemonitor.ui.theme.ReadingStyles
 import com.gabodev.iotdevicemonitor.ui.theme.Spacing
-import com.gabodev.iotdevicemonitor.viewmodel.PacaViewModel
+import com.gabodev.iotdevicemonitor.viewmodel.DeviceViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReadingsScreen(
-    viewModel: PacaViewModel,
+    viewModel: DeviceViewModel,
     deviceId: String,
     navController: NavHostController,
     onAlertsClick: () -> Unit = {},

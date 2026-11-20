@@ -55,7 +55,7 @@ fun AddDeviceDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 OutlinedTextField(deviceId, { deviceId = it.trim() }, label = { Text("ID del dispositivo") }, singleLine = true, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(name, { name = it }, label = { Text("Nombre") }, placeholder = { Text("Ej. Paca norte #3") }, singleLine = true, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(name, { name = it }, label = { Text("Nombre") }, placeholder = { Text("Ej. Compostera norte") }, singleLine = true, modifier = Modifier.fillMaxWidth())
                 OutlinedTextField(location, { location = it }, label = { Text("Ubicación (opcional)") }, placeholder = { Text("Ej. Invernadero A") }, singleLine = true, modifier = Modifier.fillMaxWidth())
                 Text("Tipo", style = MaterialTheme.typography.titleSmall)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.sm)) {

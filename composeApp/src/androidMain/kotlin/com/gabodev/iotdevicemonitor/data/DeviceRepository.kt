@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
 
 private const val DEVICES = "devices"
 
-class FirebasePacaRepository : PacaRepository {
+class FirebaseDeviceRepository : DeviceRepository {
     private val database = FirebaseDatabase.getInstance()
     private val auth = FirebaseAuth.getInstance()
 

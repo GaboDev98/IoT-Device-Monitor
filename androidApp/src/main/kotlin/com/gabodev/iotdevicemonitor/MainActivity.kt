@@ -6,12 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.gabodev.iotdevicemonitor.data.FirebasePacaRepository
+import com.gabodev.iotdevicemonitor.data.FirebaseDeviceRepository
 import com.gabodev.iotdevicemonitor.viewmodel.AuthViewModel
-import com.gabodev.iotdevicemonitor.viewmodel.PacaViewModel
+import com.gabodev.iotdevicemonitor.viewmodel.DeviceViewModel
 
 class MainActivity : ComponentActivity() {
-    private val pacaViewModel by lazy { PacaViewModel(FirebasePacaRepository()) }
+    private val deviceViewModel by lazy { DeviceViewModel(FirebaseDeviceRepository()) }
     private val authViewModel by lazy { AuthViewModel() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         AlertNotifications.createChannel(this)
 
         setContent {
-            App(pacaViewModel, authViewModel)
+            App(deviceViewModel, authViewModel)
         }
     }
 }
@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    val pacaViewModel by lazy { PacaViewModel(FirebasePacaRepository()) }
+    val deviceViewModel by lazy { DeviceViewModel(FirebaseDeviceRepository()) }
     val authViewModel by lazy { AuthViewModel() }
-    App(pacaViewModel, authViewModel)
+    App(deviceViewModel, authViewModel)
 }

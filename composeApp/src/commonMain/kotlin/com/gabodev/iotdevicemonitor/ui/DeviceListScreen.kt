@@ -58,12 +58,12 @@ import com.gabodev.iotdevicemonitor.ui.components.BannerTone
 import com.gabodev.iotdevicemonitor.ui.components.DeviceCard
 import com.gabodev.iotdevicemonitor.ui.components.EmptyState
 import com.gabodev.iotdevicemonitor.ui.theme.Spacing
-import com.gabodev.iotdevicemonitor.viewmodel.PacaViewModel
+import com.gabodev.iotdevicemonitor.viewmodel.DeviceViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeviceListScreen(
-    viewModel: PacaViewModel,
+    viewModel: DeviceViewModel,
     onDeviceClick: (String) -> Unit,
     onLogout: () -> Unit = {},
     onDeleteAccount: () -> Unit = {},
